@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "raycastclient",
+  "version": "${version}",
+  "name": "raycastClient",
+  "description": "",
+  "authors": [],
+  "contact": {
+    "repo": "https://github.com/又鸟/raycastClient"
+  },
+  "license": "All-Rights-Reserved",
+  "icon": "assets/raycastclient/raycastclient.png",
+  "environment": "client",
+  "entrypoints": {
+    "main": [
+      "dev.yuruni.raycastclient.RaycastClient"
+    ]
+  },
+  "mixins": [
+    "raycastclient.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
