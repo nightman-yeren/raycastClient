@@ -7,7 +7,7 @@ import dev.yuruni.raycastclient.module.hud.ClickGUIModule.ColorModel;
 import com.lukflug.panelstudio.base.IBoolean;
 import com.lukflug.panelstudio.setting.IColorSetting;
 import com.lukflug.panelstudio.theme.ITheme;
-import dev.yuruni.raycastclient.util.GSColor;
+import dev.yuruni.raycastclient.util.color.GSColor;
 
 public class ColorSetting extends Setting<Color> implements IColorSetting {
     public final boolean hasAlpha,allowsRainbow;

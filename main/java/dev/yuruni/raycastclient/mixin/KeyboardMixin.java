@@ -23,7 +23,7 @@ public class KeyboardMixin {
                            int action, int modifiers, CallbackInfo ci) {
         RaycastClient raycast = RaycastClient.INSTANCE;
         if(raycast != null && raycast.eventManager != null) {
-            if(action == GLFW.GLFW_PRESS) {
+            if(action == GLFW.GLFW_PRESS && MinecraftClient.getInstance().currentScreen == null) {
                 //Modules
                 if (key == HUDEditorModule.keybind.getKey()) RaycastClient.gui.enterHUDEditor();
                 for (Category category : Category.values()) {

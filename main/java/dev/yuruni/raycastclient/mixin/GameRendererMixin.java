@@ -1,7 +1,7 @@
 package dev.yuruni.raycastclient.mixin;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import dev.yuruni.raycastclient.util.RenderUtil;
+import dev.yuruni.raycastclient.util.render.RenderUtil;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import org.objectweb.asm.Opcodes;

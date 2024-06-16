@@ -7,6 +7,7 @@ import dev.yuruni.raycastclient.event.EventManager;
 import dev.yuruni.raycastclient.gui.ClickGUI;
 import dev.yuruni.raycastclient.module.*;
 import dev.yuruni.raycastclient.module.hud.*;
+import dev.yuruni.raycastclient.util.render.RenderUtil;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
@@ -38,12 +39,17 @@ public class RaycastClient implements ModInitializer {
 
     //Managers
     public EventManager eventManager;
+    //Utilities
+    public static RenderUtil globalRenderer;
+    //Global variables
+    public static DrawContext globalContext;
 
     @Override
     public void onInitialize() {
         ModuleManager.init();
         System.out.println("Modules Initialized");
         eventManager = new EventManager();
+        globalRenderer = new RenderUtil();
         System.out.println("Event Manager Assigned");
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (!inited) {

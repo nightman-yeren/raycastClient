@@ -13,7 +13,7 @@ import com.lukflug.panelstudio.hud.ListComponent;
 
 public class WatermarkModule extends Module {
     private static WatermarkModule instance;
-    private static final ColorSetting color=new ColorSetting("Text Color","color","The color of the displayed text.",()->true,false,true,new Color(0,0,255),false);
+    private static final ColorSetting color=new ColorSetting("Text color","color","The color of the displayed text.",()->true,false,true,new Color(0,0,255),false);
     private static final BooleanSetting sortUp=new BooleanSetting("Sort Up","sortUp","Whether to align the text from the bottom up.",()->true,false);
     private static final BooleanSetting sortRight=new BooleanSetting("Sort Right","sortRight","Whether to align the text from right to left.",()->true,false);
     private static final StringSetting line1=new StringSetting("First Line","line1","The first line of text.",()->true,"Tyudio");

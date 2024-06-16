@@ -1,4 +1,4 @@
-package dev.yuruni.raycastclient.util;
+package dev.yuruni.raycastclient.util.render;
 
 import dev.yuruni.raycastclient.RaycastClient;
 import dev.yuruni.raycastclient.event.events.RenderEvent;

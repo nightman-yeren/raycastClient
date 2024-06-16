@@ -339,7 +339,7 @@ public class ClickGUI extends MinecraftHUDGUI {
         IComponentAdder panelMenuAdder=new StackedPanelAdder(gui,new Labeled("Example Menu",null,()->true),theme,new Point(10,10),WIDTH,animation,ChildMode.POPUP,new PanelPositioner(new Point(0,0)),()->ClickGUIModule.layout.getValue()==ClickGUIModule.Layout.PanelMenu,"panelMenu");
         ILayout panelMenuLayout=new PanelLayout(WIDTH,new Point(DISTANCE,DISTANCE),(WIDTH+DISTANCE)/2,HEIGHT+DISTANCE,animation,level->ChildMode.POPUP,level->ChildMode.POPUP,popupType);
         panelMenuLayout.populateGUI(panelMenuAdder,generator,client,theme);
-        // Color Panel
+        // color Panel
         IComponentAdder colorPanelAdder=new PanelAdder(gui,false,()->ClickGUIModule.layout.getValue()==ClickGUIModule.Layout.ColorPanel,title->"colorPanel_"+title) {
             @Override
             protected IResizable getResizable (int width) {

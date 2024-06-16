@@ -68,7 +68,7 @@ public enum Category implements ICategory {
         int min=random.nextInt(50),max=random.nextInt(50)+50;
         boolean alpha=random.nextInt(2)==0;
         boolean rainbow=random.nextInt(2)==0;
-        Color color=new Color(random.nextInt(256),random.nextInt(256),random.nextInt(256),alpha?random.nextInt(256):255);
+        color color=new color(random.nextInt(256),random.nextInt(256),random.nextInt(256),alpha?random.nextInt(256):255);
         switch (type) {
             case 0:
                 return new BooleanSetting(displayName,displayName,description,()->true,random.nextInt(2)==0);

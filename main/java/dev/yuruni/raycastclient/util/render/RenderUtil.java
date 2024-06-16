@@ -1,12 +1,17 @@
-package dev.yuruni.raycastclient.util;
+package dev.yuruni.raycastclient.util.render;
 
 import dev.yuruni.raycastclient.RaycastClient;
+import dev.yuruni.raycastclient.util.color.Color;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;
+import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
@@ -19,8 +24,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 
-import java.awt.*;
-
 public class RenderUtil {
 
     public static final Matrix4f lastProjMat = new Matrix4f();
@@ -28,6 +31,9 @@ public class RenderUtil {
     public static final Matrix4f lastModMat = new Matrix4f();
 
     public static final Matrix4f lastWorldSpaceMatrix = new Matrix4f();
+
+    private static final Vector3f FLAT_LIT_VEC1 = (new Vector3f(0.2F, 0.5F, -0.7F)).normalize();
+    private static final Vector3f FLAT_LIT_VEC2 = (new Vector3f(-0.2F, 0.5F, 0.7F)).normalize();
 
     private static final MinecraftClient client = MinecraftClient.getInstance();
 
@@ -62,7 +68,7 @@ public class RenderUtil {
         return pos != null && pos.z > -1 && pos.z < 1;
     }
 
-    public void drawTexturedQuad(Matrix4f matrix4f, Identifier texture, float x1, float y1, float width, float height, Color color) {
+    public void drawTexturedQuad(Matrix4f matrix4f, Identifier texture, float x1, float y1, float width, float height, dev.yuruni.raycastclient.util.color.Color color) {
         float red = color.getRedFloat();
         float green = color.getGreenFloat();
         float blue = color.getBlueFloat();
@@ -84,7 +90,7 @@ public class RenderUtil {
         RenderSystem.disableBlend();
     }
 
-    public void drawBox(Matrix4f matrix4f, float x, float y, float width, float height, Color color) {
+    public void drawBox(Matrix4f matrix4f, float x, float y, float width, float height, dev.yuruni.raycastclient.util.color.Color color) {
 
         RenderSystem.setShaderColor(color.getRedFloat(), color.getGreenFloat(), color.getBlueFloat(), color.getAlphaFloat());
 
@@ -108,7 +114,7 @@ public class RenderUtil {
         GL11.glDisable(GL11.GL_BLEND);
     }
 
-    public void drawCircle(Matrix4f matrix4f, float x, float y, float radius, Color color) {
+    public void drawCircle(Matrix4f matrix4f, float x, float y, float radius, dev.yuruni.raycastclient.util.color.Color color) {
         RenderSystem.setShaderColor(color.getRedFloat(), color.getGreenFloat(), color.getBlueFloat(), color.getAlphaFloat());
 
         GL11.glEnable(GL11.GL_BLEND);
@@ -142,7 +148,7 @@ public class RenderUtil {
         GL11.glDisable(GL11.GL_BLEND);
     }
 
-    public void drawRoundedBox(Matrix4f matrix4f, float x, float y, float width, float height, float radius, Color color) {
+    public void drawRoundedBox(Matrix4f matrix4f, float x, float y, float width, float height, float radius, dev.yuruni.raycastclient.util.color.Color color) {
         RenderSystem.setShaderColor(color.getRedFloat(), color.getGreenFloat(), color.getBlueFloat(), color.getAlphaFloat());
 
         GL11.glEnable(GL11.GL_BLEND);
@@ -216,7 +222,7 @@ public class RenderUtil {
         GL11.glDisable(GL11.GL_BLEND);
     }
 
-    public void drawRoundedOutline(Matrix4f matrix4f, float x, float y, float width, float height, float radius, Color color) {
+    public void drawRoundedOutline(Matrix4f matrix4f, float x, float y, float width, float height, float radius, dev.yuruni.raycastclient.util.color.Color color) {
         RenderSystem.setShaderColor(color.getRedFloat(), color.getGreenFloat(), color.getBlueFloat(), color.getAlphaFloat());
 
         GL11.glEnable(GL11.GL_BLEND);
@@ -254,7 +260,7 @@ public class RenderUtil {
         GL11.glDisable(GL11.GL_DEPTH_TEST);
     }
 
-    public void drawOutlinedBox(Matrix4f matrix4f, float x, float y, float width, float height, Color outlineColor, Color backgroundColor) {
+    public void drawOutlinedBox(Matrix4f matrix4f, float x, float y, float width, float height, dev.yuruni.raycastclient.util.color.Color outlineColor, dev.yuruni.raycastclient.util.color.Color backgroundColor) {
         RenderSystem.setShaderColor(backgroundColor.getRedFloat(), backgroundColor.getGreenFloat(), backgroundColor.getBlueFloat(), backgroundColor.getAlphaFloat());
 
         GL11.glEnable(GL11.GL_BLEND);
@@ -290,11 +296,11 @@ public class RenderUtil {
         GL11.glDisable(GL11.GL_BLEND);
     }
 
-    public void drawOutlinedBox(Matrix4f matrix4f, float x, float y, float width, float height, Color color) {
-        drawOutlinedBox(matrix4f, x, y, width, height, new Color(0, 0, 0), color);
+    public void drawOutlinedBox(Matrix4f matrix4f, float x, float y, float width, float height, dev.yuruni.raycastclient.util.color.Color color) {
+        drawOutlinedBox(matrix4f, x, y, width, height, new dev.yuruni.raycastclient.util.color.Color(0, 0, 0), color);
     }
 
-    public void drawLine(Matrix4f matrix4f, float x1, float y1, float x2, float y2, Color color) {
+    public void drawLine(Matrix4f matrix4f, float x1, float y1, float x2, float y2, dev.yuruni.raycastclient.util.color.Color color) {
         RenderSystem.setShaderColor(color.getRedFloat(), color.getGreenFloat(), color.getBlueFloat(), color.getAlphaFloat());
 
         GL11.glEnable(GL11.GL_BLEND);
@@ -316,7 +322,7 @@ public class RenderUtil {
         GL11.glDisable(GL11.GL_BLEND);
     }
 
-    public void drawHorizontalGradient(Matrix4f matrix4f, float x, float y, float width, float height, Color startColor, Color endColor) {
+    public void drawHorizontalGradient(Matrix4f matrix4f, float x, float y, float width, float height, dev.yuruni.raycastclient.util.color.Color startColor, dev.yuruni.raycastclient.util.color.Color endColor) {
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
 
@@ -336,7 +342,7 @@ public class RenderUtil {
         GL11.glDisable(GL11.GL_BLEND);
     }
 
-    public void drawVerticalGradient(Matrix4f matrix4f, float x, float y, float width, float height, Color startColor, Color endColor) {
+    public void drawVerticalGradient(Matrix4f matrix4f, float x, float y, float width, float height, dev.yuruni.raycastclient.util.color.Color startColor, dev.yuruni.raycastclient.util.color.Color endColor) {
         GL11.glEnable(GL11.GL_BLEND);
         GL11.glDisable(GL11.GL_DEPTH_TEST);
 
@@ -381,7 +387,7 @@ public class RenderUtil {
         GL11.glDisable(GL11.GL_BLEND);
     }
 
-    public void drawOutline(Matrix4f matrix4f, float x, float y, float width, float height, Color color) {
+    public void drawOutline(Matrix4f matrix4f, float x, float y, float width, float height, dev.yuruni.raycastclient.util.color.Color color) {
         RenderSystem.setShaderColor(color.getRedFloat(), color.getGreenFloat(), color.getBlueFloat(), color.getAlphaFloat());
 
         GL11.glEnable(GL11.GL_BLEND);
@@ -406,7 +412,7 @@ public class RenderUtil {
         GL11.glDisable(GL11.GL_BLEND);
     }
 
-    public void draw3DBox(Matrix4f matrix4f, Box box, Color color) {
+    public void draw3DBox(Matrix4f matrix4f, Box box, dev.yuruni.raycastclient.util.color.Color color) {
         RenderSystem.setShaderColor(color.getRedFloat(), color.getGreenFloat(), color.getBlueFloat(), 1.0f);
 
         GL11.glEnable(GL11.GL_BLEND);
@@ -497,7 +503,7 @@ public class RenderUtil {
         GL11.glDisable(GL11.GL_BLEND);
     }
 
-    public void drawTransparent3DBox(MatrixStack matrixStack, Box box, Color color, float alpha) {
+    public void drawTransparent3DBox(MatrixStack matrixStack, Box box, dev.yuruni.raycastclient.util.color.Color color, float alpha) {
         if (!RaycastClient.renderObjects) return;
         RenderSystem.setShaderColor(color.getRedFloat(), color.getGreenFloat(), color.getBlueFloat(), 1.0f);
 
@@ -612,8 +618,70 @@ public class RenderUtil {
         GL11.glDisable(GL11.GL_BLEND);
     }
 
+    public void drawPaperDoll(PlayerEntity targetPlayer, int posX, int posY, int size, DrawContext drawContext) {
+
+        MatrixStack matrixStack = drawContext.getMatrices();
+        matrixStack.push();
+
+        int renderPosY = posY;
+        // If the player is elytra flying, the entity must be manually centered depending on the pitch.
+        if (targetPlayer.isFallFlying())
+            renderPosY = posY - MathHelper.ceil(size * 2 * toMaxAngleRatio(targetPlayer.getPitch()));
+            // If the player is swimming, the entity must also be centered in the Y axis.
+        else if (targetPlayer.isSwimming()) {
+            renderPosY = posY - size;
+        }
+        //int safeArea = settings.overlayIgnoresSafeArea? 0 : settings.getScreenSafeArea();
+        int safeArea = 0;
+        matrixStack.translate(posX + safeArea, renderPosY + safeArea, 0);
+        matrixStack.scale((float) size, (float) size, -(float) size);
+        Quaternionf quaternion = new Quaternionf().rotateZ((float)Math.PI);
+        matrixStack.multiply(quaternion);
+
+        // Store previous entity rotations.
+        float bodyYaw = targetPlayer.bodyYaw;
+        float yaw = targetPlayer.getYaw();
+        float headYaw = targetPlayer.headYaw;
+
+
+        // Set the entity desired rotation for drawing.
+        float angle = 145;
+        if (targetPlayer.isFallFlying() || targetPlayer.isBlocking()) {
+            targetPlayer.headYaw = angle;
+        } else {
+            targetPlayer.setYaw(headYaw - bodyYaw + angle);
+            targetPlayer.headYaw = targetPlayer.getYaw();
+        }
+        targetPlayer.bodyYaw = angle;
+
+        // Set up shading.
+        RenderSystem.setupGuiFlatDiffuseLighting(FLAT_LIT_VEC1, FLAT_LIT_VEC2);
+
+        // Draw the entity.
+        EntityRenderDispatcher entityRenderDispatcher = MinecraftClient.getInstance().getEntityRenderDispatcher();
+        entityRenderDispatcher.setRenderShadows(false);
+        VertexConsumerProvider.Immediate immediate = MinecraftClient.getInstance().getBufferBuilders().getEntityVertexConsumers();
+        RenderSystem.runAsFancy(() -> entityRenderDispatcher.render(targetPlayer, 0, 0, 0, 0.0F, 1.0F, matrixStack, immediate, 0xF000F0));
+        immediate.draw();
+        entityRenderDispatcher.setRenderShadows(true);
+
+        // Restore previous entity rotations.
+        targetPlayer.bodyYaw = bodyYaw;
+        targetPlayer.setYaw(yaw);
+        targetPlayer.headYaw = headYaw;
+
+        matrixStack.pop();
+
+        // Restore shading.
+        DiffuseLighting.enableGuiDepthLighting();
+    }
+
+    private float toMaxAngleRatio(float angle) {
+        return (90 + angle) / 180;
+    }
+
     /*
-    public void drawString(DrawContext drawContext, String text, float x, float y, Color color) {
+    public void drawString(DrawContext drawContext, String text, float x, float y, color color) {
         AobaClient aoba = Aoba.getInstance();
         MatrixStack matrixStack = drawContext.getMatrices();
         matrixStack.push();
@@ -633,7 +701,7 @@ public class RenderUtil {
         matrixStack.pop();
     }
 
-    public void drawStringWithScale(DrawContext drawContext, String text, float x, float y, Color color, float scale) {
+    public void drawStringWithScale(DrawContext drawContext, String text, float x, float y, color color, float scale) {
         AobaClient aoba = Aoba.getInstance();
         MatrixStack matrixStack = drawContext.getMatrices();
         matrixStack.push();

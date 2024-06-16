@@ -5,7 +5,7 @@ import dev.yuruni.raycastclient.event.events.RenderEvent;
 import dev.yuruni.raycastclient.event.listener.RenderListener;
 import dev.yuruni.raycastclient.module.Module;
 import dev.yuruni.raycastclient.setting.BooleanSetting;
-import dev.yuruni.raycastclient.util.Color;
+import dev.yuruni.raycastclient.util.color.Color;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;

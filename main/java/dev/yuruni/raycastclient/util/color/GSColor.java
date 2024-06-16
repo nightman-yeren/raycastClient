@@ -1,4 +1,4 @@
-package dev.yuruni.raycastclient.util;
+package dev.yuruni.raycastclient.util.color;
 
 import java.awt.Color;
 

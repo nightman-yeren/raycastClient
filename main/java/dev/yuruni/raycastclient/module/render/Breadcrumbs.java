@@ -7,7 +7,7 @@ import dev.yuruni.raycastclient.event.listener.RenderListener;
 import dev.yuruni.raycastclient.event.listener.TickListener;
 import dev.yuruni.raycastclient.module.Module;
 import dev.yuruni.raycastclient.setting.BooleanSetting;
-import dev.yuruni.raycastclient.util.Color;
+import dev.yuruni.raycastclient.util.color.Color;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.ArrayList;

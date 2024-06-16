@@ -1,4 +1,4 @@
-package dev.yuruni.raycastclient.util;
+package dev.yuruni.raycastclient.util.color;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joml.Vector3f;
@@ -17,11 +17,11 @@ public class Color {
     public float luminance;
 
     /**
-     * Color Constructor using RGB color space.
+     * color Constructor using RGB color space.
      *
-     * @param r Red component of a Color.
-     * @param g Green component of a Color.
-     * @param b Blue component of a Color.
+     * @param r Red component of a color.
+     * @param g Green component of a color.
+     * @param b Blue component of a color.
      */
     public Color(int r, int g, int b) {
         this.r = r;
@@ -76,7 +76,7 @@ public class Color {
     }
 
     /**
-     * Color Constructor using HSV color space.
+     * color Constructor using HSV color space.
      *
      * @param hue
      * @param saturation
@@ -108,9 +108,9 @@ public class Color {
     /**
      * Sets the RGB fields using inputs from an RGB color space.
      *
-     * @param r Red component of a Color.
-     * @param g Green component of a Color.
-     * @param b Blue component of a Color.
+     * @param r Red component of a color.
+     * @param g Green component of a color.
+     * @param b Blue component of a color.
      */
     public void setRGB(int r, int g, int b) {
         this.r = r;
@@ -130,7 +130,7 @@ public class Color {
     }
 
     /**
-     * Returns the Color as a string in format RRRGGGBBB.
+     * Returns the color as a string in format RRRGGGBBB.
      *
      * @return
      */
@@ -202,7 +202,7 @@ public class Color {
      * @param r Red component.
      * @param g Green component.
      * @param b Blue component.
-     * @return Color as a String.
+     * @return color as a String.
      */
     public static String rgbToString(int r, int g, int b) {
         String rs = Integer.toString((int) (r));
@@ -217,7 +217,7 @@ public class Color {
      * @param r Red component.
      * @param g Green component.
      * @param b Blue component.
-     * @return Color as an Integer.
+     * @return color as an Integer.
      */
     public static int rgbToInt(int r, int g, int b) {
         String rs = Integer.toString((int) (r));
@@ -232,7 +232,7 @@ public class Color {
      * @param r Red component.
      * @param g Green component.
      * @param b Blue component.
-     * @return Color as Hex.
+     * @return color as Hex.
      */
     public static int convertRGBToHex(int r, int g, int b) {
         String strr = StringUtils.leftPad(Integer.toHexString(r), 2, '0');
@@ -245,8 +245,8 @@ public class Color {
     /**
      * Converts Hex codes to RGB.
      *
-     * @param hex Color as Hex.
-     * @return Color from Hex Code.
+     * @param hex color as Hex.
+     * @return color from Hex Code.
      */
     public static Color convertHextoRGB(String hex) {
         String RString = hex.charAt(1) + "" + hex.charAt(2);
@@ -273,7 +273,7 @@ public class Color {
         float chroma = luminance * saturation;
         float x = chroma * (1 - Math.abs((h % 2) - 1));
 
-        // Depending on the side, set the Chroma component to the correct Color.
+        // Depending on the side, set the Chroma component to the correct color.
         Vector3f rgbVec;
         if (h >= 0 && h <= 1) {
             rgbVec = new Vector3f(chroma, x, 0);
@@ -291,7 +291,7 @@ public class Color {
             rgbVec = null;
         }
 
-        // If the Color does exist, add luminance and convert to RGB.
+        // If the color does exist, add luminance and convert to RGB.
         if (rgbVec != null) {
             float m = luminance - chroma;
             return new Color((int) (255.0f * (rgbVec.x + m)), (int) (255.0f * (rgbVec.y + m)),

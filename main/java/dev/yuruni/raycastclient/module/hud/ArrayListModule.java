@@ -11,7 +11,7 @@ import dev.yuruni.raycastclient.module.Category;
 import dev.yuruni.raycastclient.module.Module;
 import dev.yuruni.raycastclient.setting.BooleanSetting;
 import dev.yuruni.raycastclient.setting.ColorSetting;
-import dev.yuruni.raycastclient.util.GSColor;
+import dev.yuruni.raycastclient.util.color.GSColor;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class ArrayListModule extends Module implements RenderListener {
 
     private static final BooleanSetting sortUp = new BooleanSetting("Sort Up", "sortup", "Sorting", () -> true, true);
     private static final BooleanSetting sortRight = new BooleanSetting("Sort Right", "sortright", "Sorting", () -> true, false);
-    private static final ColorSetting color = new ColorSetting("Color", "color", "The color", () -> true, true, true, new Color(255, 255 ,255), false);
+    private static final ColorSetting color = new ColorSetting("color", "color", "The color", () -> true, true, true, new Color(255, 255 ,255), false);
 
     public ArrayListModule() {
         super("ArrayList Hud", "arraylisthud", "The side hud for enabled modules", () -> true, true);

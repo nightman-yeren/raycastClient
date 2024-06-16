@@ -1,6 +1,6 @@
 package dev.yuruni.raycastclient.mixin;
 
-import dev.yuruni.raycastclient.util.RenderManager;
+import dev.yuruni.raycastclient.util.render.RenderManager;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.LightmapTextureManager;

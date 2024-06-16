@@ -5,26 +5,24 @@ import com.lukflug.panelstudio.base.IInterface;
 import com.lukflug.panelstudio.base.IToggleable;
 import com.lukflug.panelstudio.component.IFixedComponent;
 import com.lukflug.panelstudio.hud.HUDComponent;
-import com.lukflug.panelstudio.hud.HUDList;
-import com.lukflug.panelstudio.hud.ListComponent;
 import dev.yuruni.raycastclient.RaycastClient;
 import dev.yuruni.raycastclient.event.events.RenderEvent;
 import dev.yuruni.raycastclient.event.listener.RenderListener;
 import dev.yuruni.raycastclient.module.Module;
 import dev.yuruni.raycastclient.setting.ColorSetting;
 import dev.yuruni.raycastclient.setting.IntegerSetting;
-import dev.yuruni.raycastclient.util.GSColor;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
+import dev.yuruni.raycastclient.util.color.GSColor;
+import net.minecraft.entity.Entity;;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import org.spongepowered.asm.mixin.Interface;
+import net.minecraft.util.hit.HitResult;
+import net.minecraft.util.math.Vec3d;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Map;
 import java.util.Objects;
 
 public class TargetHUD extends Module implements RenderListener {
@@ -40,6 +38,7 @@ public class TargetHUD extends Module implements RenderListener {
         instance = this;
         settings.add(range);
         settings.add(background);
+        settings.add(outline);
     }
 
     private static Color getNameColor(String playerName) {
@@ -125,16 +124,18 @@ public class TargetHUD extends Module implements RenderListener {
                             context.getInterface().fillRect(new Rectangle(context.getPos(), new Dimension(1, context.getSize().height)), color, color, color, color);
                             context.getInterface().fillRect(new Rectangle(new Point(context.getPos().x + context.getSize().width - 1, context.getPos().y), new Dimension(1, context.getSize().height)), color, color, color, color);
                             context.getInterface().fillRect(new Rectangle(new Point(context.getPos().x, context.getPos().y + context.getSize().height - 1), new Dimension(context.getSize().width, 1)), color, color, color, color);
-                            //player - TODO: Fix player render
-                            //renderEntity(playerEntity, ...)
+                            //player
+                            targetPlayer = playerEntity;
+                            RaycastClient.globalRenderer.drawPaperDoll(targetPlayer, context.getPos().x + 30, context.getPos().y + 90, 43, RaycastClient.globalContext);
+                            targetPlayer = null;
                             //name
                             String playerName = playerEntity.getName().getString();
                             Color nameColor = getNameColor(playerName);
                             context.getInterface().drawString(new Point(context.getPos().x + 71, context.getPos().y + 11), mc.textRenderer.fontHeight, playerName, nameColor);
-                            //health
+                            //health //TODO: Health prediction
                             int playerHealth = (int) (playerEntity.getHealth() + playerEntity.getAbsorptionAmount());
                             Color healthColor = getHealthColor(playerHealth);
-                            context.getInterface().drawString(new Point(context.getPos().x + 71, context.getPos().y + 23), mc.textRenderer.fontHeight, "Health: ", healthColor);
+                            context.getInterface().drawString(new Point(context.getPos().x + 71, context.getPos().y + 23), mc.textRenderer.fontHeight, "Health: " + playerHealth, healthColor);
                             //distance
                             context.getInterface().drawString(new Point(context.getPos().x + 71, context.getPos().y + 33), mc.textRenderer.fontHeight, "Distance: " + (int) playerEntity.distanceTo(mc.player), new Color(255, 255, 255));
                             //ping and info
@@ -142,30 +143,87 @@ public class TargetHUD extends Module implements RenderListener {
                             if (playerEntity.getInventory().getArmorStack(2).getItem().equals(Items.ELYTRA)) {
                                 info = "Bee";
                             } else if (playerEntity.getInventory().getArmorStack(2).getItem().equals(Items.DIAMOND_CHESTPLATE) || playerEntity.getInventory().getArmorStack(2).getItem().equals((Items.NETHERITE_CHESTPLATE))) {
-                                info = "Stacked";
+                                info = "STKed";
                             } else if (playerEntity.getInventory().getArmorStack(3).getItem().equals(Items.AIR)) {
                                 info = "Noob";
                             } else {
                                 info = "None";
                             }
                             context.getInterface().drawString(new Point(context.getPos().x + 71, context.getPos().y + 43), mc.textRenderer.fontHeight, info + " | " + getPing(playerEntity) + "ms", new Color(255, 255, 255));
+                            /* Potion effects doesn't work
                             String status = null;
                             Color statusColor = null;
-                            for (StatusEffectInstance effect : playerEntity.getStatusEffects()) {
-                                if (effect.getEffectType() == StatusEffects.WEAKNESS) {
+                            for (Map.Entry<StatusEffect, StatusEffectInstance> effect : playerEntity.getActiveStatusEffects().entrySet()) {
+                                if (effect.getValue().getEffectType() == StatusEffects.WEAKNESS) {
                                     status = "Weakness ;)";
                                     statusColor = new Color(135, 0, 25);
-                                } else if (effect.getEffectType() == StatusEffects.INVISIBILITY) {
+                                } else if (effect.getValue().getEffectType() == StatusEffects.INVISIBILITY) {
                                     status = "Invisible w(ﾟДﾟ)w";
                                     statusColor = new Color(90, 90, 90);
-                                } else if (effect.getEffectType() == StatusEffects.STRENGTH) {
+                                } else if (effect.getValue().getEffectType() == StatusEffects.STRENGTH) {
                                     status = "Strength ┗|｀O′|┛";
                                     statusColor = new Color(185, 65, 185);
                                 }
+                                System.out.println(effect.getValue().getEffectType());
                             }
                             if (status != null) context.getInterface().drawString(new Point(context.getPos().x + 71, context.getPos().y + 55), mc.textRenderer.fontHeight, "Status: " + status, statusColor);
-                            //TODO: Render armor items
+                             */
+                            //visibility
+                            String message = "Unknown";
+                            Color messageColor = new Color(255, 255, 255);
+                            if (mc.cameraEntity != null) {
+                                if (playerEntity.canSee(mc.player)) {
+                                    //High level math calculation using GEOMETRY DASH
+                                    Vec3d playerRotation = playerEntity.getRotationVec(1.0F).normalize();
+                                    Vec3d difference = new Vec3d(mc.player.getX() - playerEntity.getX(), mc.player.getEyeY() - playerEntity.getEyeY(), mc.player.getZ() - playerEntity.getZ());
+                                    double direction = difference.length();
+                                    difference = difference.normalize();
+                                    double dotProduct = playerRotation.dotProduct(difference);
+                                    if (dotProduct > 0.96D - 0.025D / direction) {
+                                        message = "Perceiving";
+                                        messageColor = new Color(255, 0, 0);
+                                    } else {
+                                        message = "Perceivable";
+                                        messageColor = new Color(255, 174, 0);
+                                    }
+                                } else {
+                                    message = "Unperceived";
+                                    messageColor = new Color(0, 255, 0);
+                                }
+                                context.getInterface().drawString(new Point(context.getPos().x + 71, context.getPos().y + 55), mc.textRenderer.fontHeight, message, messageColor);
+                            } else {
+                                context.getInterface().drawString(new Point(context.getPos().x + 71, context.getPos().y + 55), mc.textRenderer.fontHeight, "Raycast Unavailable", new Color(255, 255, 0));
+                            }
+                            if (RaycastClient.globalContext != null) {
+                                int yPos = context.getPos().y + 92;
+                                for (ItemStack itemStack : playerEntity.getArmorItems()) {
+                                    yPos -= 20;
+                                    RaycastClient.globalContext.drawItem(itemStack, context.getPos().x + 49, yPos);
+                                }
+                            }
+                        } else {
+                            //still drawing background and outline
+                            //background
+                            Color backgroundColor = new GSColor(new GSColor(background.getValue()), 100);
+                            context.getInterface().fillRect(context.getRect(), backgroundColor, backgroundColor, backgroundColor, backgroundColor);
+                            //outline
+                            Color color = outline.getValue();
+                            context.getInterface().fillRect(new Rectangle(context.getPos(), new Dimension(context.getSize().width, 1)), color, color, color, color);
+                            context.getInterface().fillRect(new Rectangle(context.getPos(), new Dimension(1, context.getSize().height)), color, color, color, color);
+                            context.getInterface().fillRect(new Rectangle(new Point(context.getPos().x + context.getSize().width - 1, context.getPos().y), new Dimension(1, context.getSize().height)), color, color, color, color);
+                            context.getInterface().fillRect(new Rectangle(new Point(context.getPos().x, context.getPos().y + context.getSize().height - 1), new Dimension(context.getSize().width, 1)), color, color, color, color);
                         }
+                    } else {
+                        //still drawing background and outline
+                        //background
+                        Color backgroundColor = new GSColor(new GSColor(background.getValue()), 100);
+                        context.getInterface().fillRect(context.getRect(), backgroundColor, backgroundColor, backgroundColor, backgroundColor);
+                        //outline
+                        Color color = outline.getValue();
+                        context.getInterface().fillRect(new Rectangle(context.getPos(), new Dimension(context.getSize().width, 1)), color, color, color, color);
+                        context.getInterface().fillRect(new Rectangle(context.getPos(), new Dimension(1, context.getSize().height)), color, color, color, color);
+                        context.getInterface().fillRect(new Rectangle(new Point(context.getPos().x + context.getSize().width - 1, context.getPos().y), new Dimension(1, context.getSize().height)), color, color, color, color);
+                        context.getInterface().fillRect(new Rectangle(new Point(context.getPos().x, context.getPos().y + context.getSize().height - 1), new Dimension(context.getSize().width, 1)), color, color, color, color);
                     }
                 }
             }
@@ -177,7 +235,7 @@ public class TargetHUD extends Module implements RenderListener {
 
             @Override
             public Dimension getSize(IInterface inter) {
-                return new Dimension(162, 94);
+                return new Dimension(142, 94);
             }
         };
     }

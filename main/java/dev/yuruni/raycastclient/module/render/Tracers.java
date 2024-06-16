@@ -1,13 +1,11 @@
 package dev.yuruni.raycastclient.module.render;
 
-import com.lukflug.panelstudio.base.IBoolean;
 import dev.yuruni.raycastclient.RaycastClient;
 import dev.yuruni.raycastclient.event.events.RenderEvent;
 import dev.yuruni.raycastclient.event.listener.RenderListener;
 import dev.yuruni.raycastclient.module.Module;
 import dev.yuruni.raycastclient.setting.BooleanSetting;
-import dev.yuruni.raycastclient.util.Color;
-import dev.yuruni.raycastclient.util.RenderUtil;
+import dev.yuruni.raycastclient.util.color.Color;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.Camera;

@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import dev.yuruni.raycastclient.RaycastClient;
 import dev.yuruni.raycastclient.setting.Setting;
 import com.lukflug.panelstudio.base.IBoolean;
 import com.lukflug.panelstudio.base.IToggleable;
 import com.lukflug.panelstudio.setting.IModule;
 import com.lukflug.panelstudio.setting.ISetting;
-import dev.yuruni.raycastclient.util.RenderUtil;
+import dev.yuruni.raycastclient.util.render.RenderUtil;
 import net.minecraft.client.MinecraftClient;
 
 public class Module implements IModule, IToggleable {
