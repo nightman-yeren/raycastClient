@@ -35,6 +35,7 @@ public class Breadcrumbs extends Module implements RenderListener, TickListener 
         super("Breadcrumbs", "breadcrumbs", "Shows where you stepped", () -> true, true);
         settings.add(recordPositionInBackground);
         settings.add(clearPositions);
+        settings.add(comment);
     }
 
     @Override

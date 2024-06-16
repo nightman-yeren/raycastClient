@@ -57,11 +57,14 @@ public class RaycastClient implements ModInitializer {
             for (int i=32;i<keys.length;i++) {
                 if (keys[i]!=(GLFW.glfwGetKey(MinecraftClient.getInstance().getWindow().getHandle(),i)==GLFW.GLFW_PRESS)) {
                     if (i != GLFW.GLFW_KEY_ESCAPE) {
+                        /*
                         keys[i] = !keys[i];
                         if (keys[i]) {
                             if (i == HUDEditorModule.keybind.getKey()) gui.enterHUDEditor();
                             gui.handleKeyEvent(i);
                         }
+                        ALL MOVED TO KEYBOARD MIXIN
+                         */
                     } else {
                         guiOpened = false;
                     }

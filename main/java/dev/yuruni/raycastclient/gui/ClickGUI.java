@@ -119,6 +119,7 @@ public class ClickGUI extends MinecraftHUDGUI {
         },animation), TabGUIModule.getToggle(),animation.get(),theme,BORDER);
         gui.addHUDComponent(WatermarkModule.getComponent(), WatermarkModule.getToggle(),animation.get(),theme,BORDER);
         gui.addHUDComponent(LogoModule.getComponent(inter),LogoModule.getToggle(),animation.get(),theme,BORDER);
+        gui.addHUDComponent(ArrayListModule.getComponent(), ArrayListModule.getToggle(), animation.get(), theme, BORDER);
 
         // Creating popup types ...
         BiFunction<Context,Integer,Integer> scrollHeight=(context,componentHeight)->Math.min(componentHeight,Math.max(HEIGHT*4,ClickGUI.this.height-context.getPos().y-HEIGHT));
