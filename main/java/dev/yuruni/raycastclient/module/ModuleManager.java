@@ -10,6 +10,7 @@ public class ModuleManager {
         Category.init();
         Category.HUD.modules.add(new ClickGUIModule());
         Category.HUD.modules.add(new HUDEditorModule());
+        Category.HUD.modules.add(new TargetHUD());
         Category.HUD.modules.add(new ArrayListModule());
         Category.HUD.modules.add(new TabGUIModule());
         Category.HUD.modules.add(new WatermarkModule());

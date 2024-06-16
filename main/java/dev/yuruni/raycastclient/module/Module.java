@@ -22,7 +22,7 @@ public class Module implements IModule, IToggleable {
     public final boolean toggleable;
     private boolean enabled=false;
     private final RenderUtil renderer = new RenderUtil();
-    public final MinecraftClient mc = MinecraftClient.getInstance();
+    public static final MinecraftClient mc = MinecraftClient.getInstance();
 
     public Module (String displayName, String configName, String description, IBoolean visible, boolean toggleable) {
         this.displayName=displayName;
