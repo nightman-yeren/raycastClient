@@ -6,7 +6,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -682,7 +681,7 @@ public class RenderUtil {
 
     public static Vec3d getCameraPos()
     {
-        Camera camera = MinecraftClient.getInstance().getBlockEntityRenderDispatcher().camera;
+        Camera camera = client.getBlockEntityRenderDispatcher().camera;
         if(camera == null)
             return Vec3d.ZERO;
 
@@ -691,7 +690,7 @@ public class RenderUtil {
 
     public static BlockPos getCameraBlockPos()
     {
-        Camera camera = MinecraftClient.getInstance().getBlockEntityRenderDispatcher().camera;
+        Camera camera = client.getBlockEntityRenderDispatcher().camera;
         if(camera == null)
             return BlockPos.ORIGIN;
 

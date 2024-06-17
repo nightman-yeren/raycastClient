@@ -1,13 +1,14 @@
 package dev.yuruni.raycastclient.event.events;
 
 import dev.yuruni.raycastclient.event.listener.AbstractListener;
-import dev.yuruni.raycastclient.event.listener.RenderListener;
+import dev.yuruni.raycastclient.event.listener.WorldRenderListener;
 import net.minecraft.client.util.math.MatrixStack;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
 
-public class RenderEvent extends AbstractEvent {
+public class WorldRenderEvent extends AbstractEvent {
+
     MatrixStack matrixStack;
     float partialTicks;
 
@@ -18,22 +19,25 @@ public class RenderEvent extends AbstractEvent {
         return partialTicks;
     }
 
-    public RenderEvent(MatrixStack matrixStack, float partialTicks) {
+    public WorldRenderEvent(MatrixStack matrixStack, float partialTicks) {
         this.matrixStack = matrixStack;
         this.partialTicks = partialTicks;
     }
 
     @Override
     public void Fire(ArrayList<? extends AbstractListener> listeners) {
+        GL11.glEnable(GL11.GL_LINE_SMOOTH);
         for(AbstractListener listener : listeners) {
-            RenderListener renderListener = (RenderListener) listener;
-            renderListener.OnRender(this);
+            WorldRenderListener worldRenderListener = (WorldRenderListener) listener;
+            worldRenderListener.OnRender(this);
         }
+        GL11.glDisable(GL11.GL_LINE_SMOOTH);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public Class<RenderListener> GetListenerClassType() {
-        return RenderListener.class;
+    public Class<WorldRenderListener> GetListenerClassType() {
+        return WorldRenderListener.class;
     }
+
 }

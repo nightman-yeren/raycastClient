@@ -25,7 +25,7 @@ public class ModuleManager {
         Category.RENDER.modules.add(new Fullbright());
         Category.RENDER.modules.add(new EntityESP());
         Category.RENDER.modules.add(new Tracers());
-        Category.RENDER.modules.add(new Trajectories());
+        //Category.RENDER.modules.add(new Trajectories());
         Category.RENDER.modules.add(new Breadcrumbs());
     }
 

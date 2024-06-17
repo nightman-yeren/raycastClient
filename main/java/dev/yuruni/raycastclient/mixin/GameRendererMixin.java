@@ -1,10 +1,13 @@
 package dev.yuruni.raycastclient.mixin;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import dev.yuruni.raycastclient.RaycastClient;
+import dev.yuruni.raycastclient.event.events.WorldRenderEvent;
 import dev.yuruni.raycastclient.module.ModuleManager;
 import dev.yuruni.raycastclient.util.render.RenderUtil;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import org.joml.Matrix4f;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -25,6 +28,12 @@ public class GameRendererMixin {
         //Renderer3d.renderFadingBlocks(matrix);
 
         //RenderProfiler.pop();
+
+        //World Render//
+        MatrixStack matrixStack = new MatrixStack();
+        //matrixStack.multiplyPositionMatrix(matrices.peek().getPositionMatrix());
+        WorldRenderEvent event = new WorldRenderEvent(matrixStack, tickDelta);
+        RaycastClient.INSTANCE.eventManager.Fire(event);
     }
 
     @Inject(at = {@At("HEAD")}, method = { "bobView(Lnet/minecraft/client/util/math/MatrixStack;F)V"}, cancellable = true)

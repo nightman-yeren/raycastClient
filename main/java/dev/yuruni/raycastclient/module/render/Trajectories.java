@@ -2,15 +2,15 @@ package dev.yuruni.raycastclient.module.render;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.yuruni.raycastclient.RaycastClient;
-import dev.yuruni.raycastclient.event.events.RenderEvent;
+import dev.yuruni.raycastclient.event.events.WorldRenderEvent;
 import dev.yuruni.raycastclient.event.listener.RenderListener;
+import dev.yuruni.raycastclient.event.listener.WorldRenderListener;
 import dev.yuruni.raycastclient.module.Module;
 import dev.yuruni.raycastclient.setting.ColorSetting;
 import dev.yuruni.raycastclient.util.block.BlockUtil;
 import dev.yuruni.raycastclient.util.entity.EntityUtil;
 import dev.yuruni.raycastclient.util.render.AlternativeRenderUtil;
 import dev.yuruni.raycastclient.util.render.RenderUtil;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
@@ -23,9 +23,10 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.RaycastContext;
 import net.minecraft.world.RaycastContext.FluidHandling;
+import net.minecraft.world.World;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
@@ -33,10 +34,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.function.Predicate;
 
-import static net.minecraft.entity.projectile.ProjectileUtil.raycast;
-import static net.minecraft.util.hit.HitResult.Type.*;
-
-public class Trajectories extends Module implements RenderListener {
+public class Trajectories extends Module implements WorldRenderListener {
 
     private static final ColorSetting missColor = new ColorSetting("Miss Color", "misscolor", "Color when hitting nothing", () -> true, false, false, new Color(89, 89, 89), false);
     private static final ColorSetting entityHitColor = new ColorSetting("EntityHit Color", "entityhitcolor", "Color when hitting entity", () -> true, false, false, new Color(176, 60, 255), false);
@@ -51,16 +49,16 @@ public class Trajectories extends Module implements RenderListener {
 
     @Override
     protected void onEnable() {
-        RaycastClient.INSTANCE.eventManager.AddListener(RenderListener.class, this);
+        RaycastClient.INSTANCE.eventManager.AddListener(WorldRenderListener.class, this);
     }
 
     @Override
     protected void onDisable() {
-        RaycastClient.INSTANCE.eventManager.RemoveListener(RenderListener.class, this);
+        RaycastClient.INSTANCE.eventManager.RemoveListener(WorldRenderListener.class, this);
     }
 
     @Override
-    public void OnRender(RenderEvent event)
+    public void OnRender(WorldRenderEvent event)
     {
         AlternativeRenderUtil.applyRegionalRenderOffset(event.GetMatrixStack());
         MatrixStack matrixStack = event.GetMatrixStack();
@@ -113,11 +111,14 @@ public class Trajectories extends Module implements RenderListener {
         float[] colorF = new float[]{red, green, blue};
         RenderSystem.setShaderColor(colorF[0], colorF[1], colorF[2], 0.75F);
 
-        for(Vec3d point : path)
+        for(Vec3d point : path) {
+            System.out.println("Calculated Pos: " + (float) (point.x - camPos.x) + "," + (float) (point.y - camPos.y) + "," + (float) (point.z - camPos.z));
+            System.out.println("Cam pos: " + camPos.x + ", " + camPos.y + ", " + camPos.z);
             bufferBuilder
-                    .vertex(matrix, (float)(point.x - camPos.x),
-                            (float)(point.y - camPos.y), (float)(point.z - camPos.z))
+                    .vertex(matrix, (float) (point.x - camPos.x),
+                            (float) (point.y - camPos.y), (float) (point.z - camPos.z))
                     .next();
+        }
 
         tessellator.draw();
     }
