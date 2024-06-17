@@ -78,6 +78,10 @@ public class Module implements IModule, IToggleable {
         return enabled;
     }
 
+    public boolean isToggleable() {
+        return toggleable;
+    }
+
     @Override
     public Stream<ISetting<?>> getSettings() {
         return settings.stream().filter(setting->setting instanceof ISetting).sorted((a,b)->a.displayName.compareTo(b.displayName)).map(setting->(ISetting<?>)setting);
@@ -92,10 +96,6 @@ public class Module implements IModule, IToggleable {
     }
 
     public void onUpdate() {
-
-    }
-
-    public void onRender() {
 
     }
 

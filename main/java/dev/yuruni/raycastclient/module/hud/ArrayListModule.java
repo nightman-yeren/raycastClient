@@ -50,7 +50,7 @@ public class ArrayListModule extends Module implements RenderListener {
         activeModules.clear();
         for (Category category : Category.values()) {
             for (Module module : category.modules) {
-                if (module.isenabled()) {
+                if (module.isenabled() && module.isToggleable()) {
                     activeModules.add(module);
                 }
             }

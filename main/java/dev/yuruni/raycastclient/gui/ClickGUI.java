@@ -336,7 +336,7 @@ public class ClickGUI extends MinecraftHUDGUI {
         ILayout singlePanelLayout=new PanelLayout(WIDTH,new Point(DISTANCE,DISTANCE),(WIDTH+DISTANCE)/2,HEIGHT+DISTANCE,animation,level->ChildMode.DOWN,level->ChildMode.DOWN,popupType);
         singlePanelLayout.populateGUI(singlePanelAdder,generator,client,theme);
         // Panel Menu
-        IComponentAdder panelMenuAdder=new StackedPanelAdder(gui,new Labeled("Example Menu",null,()->true),theme,new Point(10,10),WIDTH,animation,ChildMode.POPUP,new PanelPositioner(new Point(0,0)),()->ClickGUIModule.layout.getValue()==ClickGUIModule.Layout.PanelMenu,"panelMenu");
+        IComponentAdder panelMenuAdder=new StackedPanelAdder(gui,new Labeled("Raycast Menu",null,()->true),theme,new Point(10,10),WIDTH,animation,ChildMode.POPUP,new PanelPositioner(new Point(0,0)),()->ClickGUIModule.layout.getValue()==ClickGUIModule.Layout.PanelMenu,"panelMenu");
         ILayout panelMenuLayout=new PanelLayout(WIDTH,new Point(DISTANCE,DISTANCE),(WIDTH+DISTANCE)/2,HEIGHT+DISTANCE,animation,level->ChildMode.POPUP,level->ChildMode.POPUP,popupType);
         panelMenuLayout.populateGUI(panelMenuAdder,generator,client,theme);
         // color Panel
@@ -362,7 +362,7 @@ public class ClickGUI extends MinecraftHUDGUI {
                 return horizontalResizable.get();
             }
         };
-        ILayout horizontalCSGOLayout=new CSGOLayout(new Labeled("Raycast Client",null,()->true),new Point(100,100),480,WIDTH,animation,"Enabled",true,true,2,ChildMode.POPUP,colorPopup) {
+        ILayout horizontalCSGOLayout=new CSGOLayout(new Labeled("Raycast Menu",null,()->true),new Point(100,100),480,WIDTH,animation,"Enabled",true,true,2,ChildMode.POPUP,colorPopup) {
             @Override
             public int getScrollHeight (Context context, int componentHeight) {
                 return resizableHeight.apply(horizontalResizable.get()).getScrollHeight(null,height);
@@ -378,7 +378,7 @@ public class ClickGUI extends MinecraftHUDGUI {
                 return verticalResizable.get();
             }
         };
-        ILayout verticalCSGOLayout=new CSGOLayout(new Labeled("Raycast Client",null,()->true),new Point(100,100),480,WIDTH,animation,"Enabled",false,true,2,ChildMode.POPUP,colorPopup) {
+        ILayout verticalCSGOLayout=new CSGOLayout(new Labeled("Raycast Menu",null,()->true),new Point(100,100),480,WIDTH,animation,"Enabled",false,true,2,ChildMode.POPUP,colorPopup) {
             @Override
             public int getScrollHeight (Context context, int componentHeight) {
                 return resizableHeight.apply(verticalResizable.get()).getScrollHeight(null,height);
@@ -394,7 +394,7 @@ public class ClickGUI extends MinecraftHUDGUI {
                 return categoryResizable.get();
             }
         };
-        ILayout categoryCSGOLayout=new CSGOLayout(new Labeled("Raycast Client",null,()->true),new Point(100,100),480,WIDTH,animation,"Enabled",false,false,2,ChildMode.POPUP,colorPopup) {
+        ILayout categoryCSGOLayout=new CSGOLayout(new Labeled("Raycast Menu",null,()->true),new Point(100,100),480,WIDTH,animation,"Enabled",false,false,2,ChildMode.POPUP,colorPopup) {
             @Override
             public int getScrollHeight (Context context, int componentHeight) {
                 return resizableHeight.apply(categoryResizable.get()).getScrollHeight(null,height);
@@ -410,7 +410,7 @@ public class ClickGUI extends MinecraftHUDGUI {
                 return searchableResizable.get();
             }
         };
-        ILayout searchableCSGOLayout=new SearchableLayout(new Labeled("Example",null,()->true),new Labeled("Search",null,()->true),new Point(100,100),480,WIDTH,animation,"Enabled",2,ChildMode.POPUP,colorPopup,(a,b)->a.getDisplayName().compareTo(b.getDisplayName()),charFilter,keys) {
+        ILayout searchableCSGOLayout=new SearchableLayout(new Labeled("Raycast",null,()->true),new Labeled("Search",null,()->true),new Point(100,100),480,WIDTH,animation,"Enabled",2,ChildMode.POPUP,colorPopup,(a,b)->a.getDisplayName().compareTo(b.getDisplayName()),charFilter,keys) {
             @Override
             public int getScrollHeight (Context context, int componentHeight) {
                 return resizableHeight.apply(searchableResizable.get()).getScrollHeight(null,height);

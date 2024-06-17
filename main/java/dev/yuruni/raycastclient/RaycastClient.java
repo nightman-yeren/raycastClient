@@ -33,7 +33,7 @@ public class RaycastClient implements ModInitializer {
 
     public static ClickGUI gui;
     public static boolean inited = false, renderObjects = true;
-    private boolean guiOpened = true;
+    public boolean guiOpened = true;
     private final boolean[] keys = new boolean[266];
     private final boolean[] guiKey = new boolean[GLFW.GLFW_KEY_RIGHT_SHIFT];
 
@@ -76,7 +76,8 @@ public class RaycastClient implements ModInitializer {
                     }
                 }
             }
-            //Special for right shift
+            /*
+            //Special for right shift - MOVED TO KEYBOARD MIXIN
             if (guiKey[GLFW.GLFW_KEY_RIGHT_SHIFT - 1] == (GLFW.glfwGetKey(MinecraftClient.getInstance().getWindow().getHandle(), GLFW.GLFW_KEY_RIGHT_SHIFT)==GLFW.GLFW_PRESS)) {
                 guiKey[GLFW.GLFW_KEY_RIGHT_SHIFT - 1] =! guiKey[GLFW.GLFW_KEY_RIGHT_SHIFT - 1];
                 if (guiKey[GLFW.GLFW_KEY_RIGHT_SHIFT - 1]) {
@@ -99,6 +100,7 @@ public class RaycastClient implements ModInitializer {
                     }
                 }
             }
+             */
         });
         new java.util.Timer().schedule(
                 new TimerTask() {
