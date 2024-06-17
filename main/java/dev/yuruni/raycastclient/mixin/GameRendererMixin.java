@@ -1,6 +1,7 @@
 package dev.yuruni.raycastclient.mixin;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import dev.yuruni.raycastclient.module.ModuleManager;
 import dev.yuruni.raycastclient.util.render.RenderUtil;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
@@ -24,5 +25,12 @@ public class GameRendererMixin {
         //Renderer3d.renderFadingBlocks(matrix);
 
         //RenderProfiler.pop();
+    }
+
+    @Inject(at = {@At("HEAD")}, method = { "bobView(Lnet/minecraft/client/util/math/MatrixStack;F)V"}, cancellable = true)
+    private void onBobViewWhenHurt(MatrixStack matrixStack, float f, CallbackInfo ci) {
+        if (ModuleManager.getModule("nooverlay").isenabled()) {
+            ci.cancel();
+        }
     }
 }

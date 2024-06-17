@@ -680,6 +680,24 @@ public class RenderUtil {
         return (90 + angle) / 180;
     }
 
+    public static Vec3d getCameraPos()
+    {
+        Camera camera = MinecraftClient.getInstance().getBlockEntityRenderDispatcher().camera;
+        if(camera == null)
+            return Vec3d.ZERO;
+
+        return camera.getPos();
+    }
+
+    public static BlockPos getCameraBlockPos()
+    {
+        Camera camera = MinecraftClient.getInstance().getBlockEntityRenderDispatcher().camera;
+        if(camera == null)
+            return BlockPos.ORIGIN;
+
+        return camera.getBlockPos();
+    }
+
     /*
     public void drawString(DrawContext drawContext, String text, float x, float y, color color) {
         AobaClient aoba = Aoba.getInstance();

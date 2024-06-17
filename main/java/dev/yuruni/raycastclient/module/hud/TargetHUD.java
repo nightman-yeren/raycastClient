@@ -179,7 +179,7 @@ public class TargetHUD extends Module implements RenderListener {
                                     double direction = difference.length();
                                     difference = difference.normalize();
                                     double dotProduct = playerRotation.dotProduct(difference);
-                                    if (dotProduct > 0.96D - 0.025D / direction) {
+                                    if (dotProduct > 0.94D - 0.025D / direction) {
                                         message = "Perceiving";
                                         messageColor = new Color(255, 0, 0);
                                     } else {

@@ -4,9 +4,14 @@
   "package": "dev.yuruni.raycastclient.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "ClientConnectionMixin",
+    "EntityMixin",
+    "interfaces.IPlayerInteractEntityC2SPacket"
   ],
   "client": [
+    "BackgroundRendererMixin",
     "ClientPlayerEntityMixin",
+    "EntityRendererMixin",
     "GameRendererMixin",
     "InGameHudMixin",
     "KeyboardMixin",

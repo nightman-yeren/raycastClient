@@ -33,9 +33,8 @@ public class RaycastClient implements ModInitializer {
 
     public static ClickGUI gui;
     public static boolean inited = false, renderObjects = true;
-    public boolean guiOpened = true;
+    public boolean guiOpened = false;
     private final boolean[] keys = new boolean[266];
-    private final boolean[] guiKey = new boolean[GLFW.GLFW_KEY_RIGHT_SHIFT];
 
     //Managers
     public EventManager eventManager;
