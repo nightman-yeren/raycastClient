@@ -60,7 +60,7 @@ public class Trajectories extends Module implements WorldRenderListener {
     @Override
     public void OnRender(WorldRenderEvent event)
     {
-        AlternativeRenderUtil.applyRegionalRenderOffset(event.GetMatrixStack());
+        //AlternativeRenderUtil.applyRenderOffset(event.GetMatrixStack());
         MatrixStack matrixStack = event.GetMatrixStack();
 
         matrixStack.push();
@@ -112,8 +112,6 @@ public class Trajectories extends Module implements WorldRenderListener {
         RenderSystem.setShaderColor(colorF[0], colorF[1], colorF[2], 0.75F);
 
         for(Vec3d point : path) {
-            System.out.println("Calculated Pos: " + (float) (point.x - camPos.x) + "," + (float) (point.y - camPos.y) + "," + (float) (point.z - camPos.z));
-            System.out.println("Cam pos: " + camPos.x + ", " + camPos.y + ", " + camPos.z);
             bufferBuilder
                     .vertex(matrix, (float) (point.x - camPos.x),
                             (float) (point.y - camPos.y), (float) (point.z - camPos.z))
