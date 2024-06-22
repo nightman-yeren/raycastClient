@@ -40,7 +40,7 @@ public class ConfigManager {
             makeConfigFolders(); //Make sure first
             loadModules();
             loadModuleKeybinds();
-            loadClickGUIPositions();
+            //loadClickGUIPositions();
         } catch (IOException e) {
             e.printStackTrace();
         }
