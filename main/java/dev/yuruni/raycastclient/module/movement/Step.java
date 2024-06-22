@@ -4,13 +4,11 @@ import dev.yuruni.raycastclient.RaycastClient;
 import dev.yuruni.raycastclient.event.events.TickEvent;
 import dev.yuruni.raycastclient.event.listener.TickListener;
 import dev.yuruni.raycastclient.module.Module;
-import dev.yuruni.raycastclient.setting.BooleanSetting;
 import dev.yuruni.raycastclient.setting.EnumSetting;
 import dev.yuruni.raycastclient.setting.IntegerSetting;
 import dev.yuruni.raycastclient.util.block.BlockUtil;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.Box;
 
