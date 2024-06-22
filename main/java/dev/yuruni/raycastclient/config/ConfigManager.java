@@ -101,8 +101,8 @@ public class ConfigManager {
                      */
                     } else if (setting instanceof StringSetting) {
                         ((StringSetting) setting).setValue(value);
-                    //} else if (setting instanceof EnumSetting) { //TODO: fix
-                        //((EnumSetting) setting).setValue(value);
+                    } else if (setting instanceof EnumSetting) {
+                        ((EnumSetting<?>) setting).setValueIndex(Integer.parseInt(value));
                     }
                 } else {
                     System.out.println("Config is somehow null");
@@ -218,9 +218,9 @@ public class ConfigManager {
             } else if (setting instanceof StringSetting) {
                 String settingValue = ((StringSetting) setting).getValue();
                 config.setProperty(propertyName, settingValue);
-            //} else if (setting instanceof EnumSetting) { //TODO: fix
-                //String settingValue = (String) ((EnumSetting) setting).getValue();
-                //config.setProperty(propertyName, settingValue);
+            } else if (setting instanceof EnumSetting) {
+                String settingValue = String.valueOf(((EnumSetting<?>) setting).getValueIndex());
+                config.setProperty(propertyName, settingValue);
             }
         }
         config.storeToXML(new FileOutputStream(fileName + moduleName + module.getConfigName() + ".xml"), null);
