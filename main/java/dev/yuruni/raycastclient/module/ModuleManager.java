@@ -23,6 +23,7 @@ public class ModuleManager {
         Category.COMBAT.modules.add(new NoOverlay());
         Category.MOVEMENT.modules.add(new Flight());
         Category.MOVEMENT.modules.add(new Step());
+        Category.MOVEMENT.modules.add(new NoFall());
         Category.RENDER.modules.add(new Fullbright());
         Category.RENDER.modules.add(new EntityESP());
         Category.RENDER.modules.add(new Tracers());
