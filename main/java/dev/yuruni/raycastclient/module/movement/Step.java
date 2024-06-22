@@ -5,22 +5,26 @@ import dev.yuruni.raycastclient.event.events.TickEvent;
 import dev.yuruni.raycastclient.event.listener.TickListener;
 import dev.yuruni.raycastclient.module.Module;
 import dev.yuruni.raycastclient.setting.BooleanSetting;
+import dev.yuruni.raycastclient.setting.EnumSetting;
 import dev.yuruni.raycastclient.setting.IntegerSetting;
 import dev.yuruni.raycastclient.util.block.BlockUtil;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.math.Box;
 
 public class Step extends Module implements TickListener {
+    private static final EnumSetting<StepMode> mode = new EnumSetting<>("Mode", "mode", "How to execute step", () -> true, StepMode.Inject, StepMode.class);
+    private static final IntegerSetting height = new IntegerSetting("Height", "height", "doesn't apply for legit mode", () -> true, 1, 10, 1);
 
-    private static final BooleanSetting legit = new BooleanSetting("Legit", "legit", "Can bypass NoCheat+", () -> true, false);
-
-    private static final IntegerSetting height = new IntegerSetting("Height", "height", "Only applies when legit is disabled", () -> true, 1, 10, 1);
+    private enum StepMode {
+        Inject, Attribute, Legit
+    }
 
     public Step() {
         super("Step", "step", "Changes how many block you can step", () -> true, true);
-        settings.add(legit);
+        settings.add(mode);
         settings.add(height);
     }
 
@@ -32,12 +36,27 @@ public class Step extends Module implements TickListener {
     @Override
     protected void onDisable() {
         RaycastClient.INSTANCE.eventManager.RemoveListener(TickListener.class, this);
+        if (mode.getValue() != StepMode.Attribute) return;
+        assert mc.player != null;
+        if (mc.player.getStepHeight() != .5f) {
+            mc.player.setStepHeight(.5f);
+        }
     }
 
     @Override
     public void OnUpdate(TickEvent event) {
-        //Purely for bypass anticheat - normal mode won't use this
-        if (legit.isOn()) {
+        //Attributes
+        if (mc.player != null) {
+            if (mode.getValue() == StepMode.Attribute) {
+                mc.player.setStepHeight(height.getValue().floatValue());
+            } else {
+                if (mc.player.getStepHeight() != .5f) {
+                    mc.player.setStepHeight(.5f);
+                }
+            }
+        }
+        if (mode.getValue() == StepMode.Legit) {
+            //Try to bypass anticheat
             ClientPlayerEntity player = mc.player;
             if (player != null && mc.world != null) {
                 if (!player.horizontalCollision) return;
@@ -81,7 +100,7 @@ public class Step extends Module implements TickListener {
     }
 
     public float adjustStepHeight(float stepHeight) {
-        if (isenabled() && !legit.isOn()) {
+        if (isenabled() && mode.getValue() == StepMode.Inject) {
             return height.getValue().floatValue();
         }
         return stepHeight;
