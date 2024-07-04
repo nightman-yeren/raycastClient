@@ -96,47 +96,47 @@ public class GUIConfig implements IConfigList {
     public record GSPanelConfig(JsonObject configObject) implements IPanelConfig {
 
         @Override
-            public void savePositon(Point position) {
-                configObject.add("PosX", new JsonPrimitive(position.x));
-                configObject.add("PosY", new JsonPrimitive(position.y));
-            }
-
-            @Override
-            public void saveSize(Dimension size) {
-
-            }
-
-            @Override
-            public Point loadPosition() {
-                Point point = new Point();
-                JsonElement panelPosXObject = configObject.get("PosX");
-                if (panelPosXObject != null && panelPosXObject.isJsonPrimitive()) {
-                    point.x = panelPosXObject.getAsInt();
-                } else return null;
-                JsonElement panelPosYObject = configObject.get("PosY");
-                if (panelPosYObject != null && panelPosYObject.isJsonPrimitive()) {
-                    point.y = panelPosYObject.getAsInt();
-                } else return null;
-                return point;
-            }
-
-            @Override
-            public Dimension loadSize() {
-                return null;
-            }
-
-            @Override
-            public void saveState(boolean state) {
-                configObject.add("State", new JsonPrimitive(state));
-            }
-
-            @Override
-            public boolean loadState() {
-                JsonElement panelOpenObject = configObject.get("State");
-                if (panelOpenObject != null && panelOpenObject.isJsonPrimitive()) {
-                    return panelOpenObject.getAsBoolean();
-                }
-                return false;
-            }
+        public void savePositon(Point position) {
+            configObject.add("PosX", new JsonPrimitive(position.x));
+            configObject.add("PosY", new JsonPrimitive(position.y));
         }
+
+        @Override
+        public void saveSize(Dimension size) {
+
+        }
+
+        @Override
+        public Point loadPosition() {
+            Point point = new Point();
+            JsonElement panelPosXObject = configObject.get("PosX");
+            if (panelPosXObject != null && panelPosXObject.isJsonPrimitive()) {
+                point.x = panelPosXObject.getAsInt();
+            } else return null;
+            JsonElement panelPosYObject = configObject.get("PosY");
+            if (panelPosYObject != null && panelPosYObject.isJsonPrimitive()) {
+                point.y = panelPosYObject.getAsInt();
+            } else return null;
+            return point;
+        }
+
+        @Override
+        public Dimension loadSize() {
+            return null;
+        }
+
+        @Override
+        public void saveState(boolean state) {
+            configObject.add("State", new JsonPrimitive(state));
+        }
+
+        @Override
+        public boolean loadState() {
+            JsonElement panelOpenObject = configObject.get("State");
+            if (panelOpenObject != null && panelOpenObject.isJsonPrimitive()) {
+                return panelOpenObject.getAsBoolean();
+            }
+            return false;
+        }
+    }
 }
