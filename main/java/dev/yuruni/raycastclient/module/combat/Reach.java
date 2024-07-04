@@ -1,6 +1,5 @@
 package dev.yuruni.raycastclient.module.combat;
 
-import com.lukflug.panelstudio.base.IBoolean;
 import dev.yuruni.raycastclient.module.Module;
 import dev.yuruni.raycastclient.setting.DoubleSetting;
 

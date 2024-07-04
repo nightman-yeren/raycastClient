@@ -1,7 +1,5 @@
 package dev.yuruni.raycastclient;
 
-import com.lukflug.panelstudio.mc20.GLInterface;
-import com.lukflug.panelstudio.mc20.MinecraftGUI;
 import dev.yuruni.raycastclient.config.ConfigManager;
 import dev.yuruni.raycastclient.event.EventManager;
 import dev.yuruni.raycastclient.gui.ClickGUI;
@@ -15,8 +13,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import org.lwjgl.glfw.GLFW;
 
-import java.io.IOException;
-import java.util.Timer;
 import java.util.TimerTask;
 
 public class RaycastClient implements ModInitializer {
