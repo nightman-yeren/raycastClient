@@ -28,7 +28,7 @@ public class RaycastClient implements ModInitializer {
     }
 
     public static ClickGUI gui;
-    public static boolean inited = false, renderObjects = true;
+    public static boolean inited = false, renderObjects = true, hudInited = false;
     public boolean guiOpened = false;
     private final boolean[] keys = new boolean[266];
 

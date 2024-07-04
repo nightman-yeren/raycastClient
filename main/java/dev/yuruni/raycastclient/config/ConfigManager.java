@@ -54,6 +54,14 @@ public class ConfigManager {
         }
     }
 
+    public static void loadHud() {
+        try {
+            loadHudModules();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private static void registerFiles(String location, String name) throws IOException {
         if (Files.exists(Paths.get(fileName + location + name + ".xml"))) {
             File file = new File(fileName + location + name + ".xml");
@@ -115,17 +123,37 @@ public class ConfigManager {
     }
 
     private static void loadEnabledModules() throws IOException {
-
         config = new Properties();
         config.loadFromXML(new FileInputStream(fileName + mainName + "toggle" + ".xml"));
         for (Category category : Category.values()) {
-            for (Module module : category.modules) {
-                boolean value = Boolean.parseBoolean(config.getProperty(module.getConfigName()));
-                if (value) {
-                    try {
-                        module.enable();
-                    } catch (NullPointerException e) {
-                        e.printStackTrace();
+            if (Category.valueOf("HUD") != category) {
+                for (Module module : category.modules) {
+                    boolean value = Boolean.parseBoolean(config.getProperty(module.getConfigName()));
+                    if (value) {
+                        try {
+                            module.enable();
+                        } catch (NullPointerException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private static void loadHudModules() throws IOException {
+        config = new Properties();
+        config.loadFromXML(new FileInputStream(fileName + mainName + "toggle" + ".xml"));
+        for (Category category : Category.values()) {
+            if (Category.valueOf("HUD") == category) {
+                for (Module module : category.modules) {
+                    boolean value = Boolean.parseBoolean(config.getProperty(module.getConfigName()));
+                    if (value) {
+                        try {
+                            module.enable();
+                        } catch (NullPointerException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -236,10 +264,8 @@ public class ConfigManager {
         registerFiles(mainName, "toggle");
 
         for (Category category : Category.values()) {
-            if (Category.valueOf("HUD") != category) {
-                for (Module module : category.modules) {
-                    config.setProperty(module.getConfigName(), String.valueOf(module.isenabled()));
-                }
+            for (Module module : category.modules) {
+                config.setProperty(module.getConfigName(), String.valueOf(module.isenabled()));
             }
         }
         config.storeToXML(new FileOutputStream(fileName + mainName + "toggle" + ".xml"), null);
