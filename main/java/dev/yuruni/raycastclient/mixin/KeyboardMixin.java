@@ -18,7 +18,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.io.IOException;
-import java.util.Objects;
 
 @Mixin(Keyboard.class)
 public class KeyboardMixin {
