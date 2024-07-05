@@ -9,6 +9,8 @@ import dev.yuruni.raycastclient.RaycastClient;
 import dev.yuruni.raycastclient.event.events.RenderEvent;
 import dev.yuruni.raycastclient.event.listener.RenderListener;
 import dev.yuruni.raycastclient.module.Module;
+import dev.yuruni.raycastclient.module.ModuleManager;
+import dev.yuruni.raycastclient.module.combat.KillAura;
 import dev.yuruni.raycastclient.setting.BooleanSetting;
 import dev.yuruni.raycastclient.setting.ColorSetting;
 import dev.yuruni.raycastclient.setting.IntegerSetting;
@@ -105,15 +107,29 @@ public class TargetHUD extends Module implements RenderListener {
             public void render(Context context) {
                 super.render(context);
                 if (mc.world != null && Objects.requireNonNull(mc.player).age >= 10) {
+                    boolean canSyncWithKA = false;
+                    PlayerEntity KATarget = null;
                     ArrayList<PlayerEntity> availablePlayerEntities = new ArrayList<PlayerEntity>();
                     for (Entity entity : mc.world.getEntities()) {
                         if (isValidEntity(entity)) {
                             availablePlayerEntities.add((PlayerEntity) entity);
                         }
                     }
+                    KillAura ka = (KillAura) ModuleManager.getModule("killaura");
+                    if (ka.isenabled()) {
+                        if (ka.getTarget() != null && ka.getTarget() instanceof PlayerEntity) {
+                            canSyncWithKA = true;
+                            KATarget = (PlayerEntity) ka.getTarget();
+                        }
+                    }
                     availablePlayerEntities.sort(Comparator.comparing(c -> mc.player.distanceTo(c)));
-                    if (!availablePlayerEntities.isEmpty()) {
-                        PlayerEntity playerEntity = availablePlayerEntities.get(0);
+                    if (!availablePlayerEntities.isEmpty() || canSyncWithKA) {
+                        PlayerEntity playerEntity;
+                        if (!canSyncWithKA) {
+                            playerEntity = availablePlayerEntities.get(0);
+                        } else {
+                            playerEntity = KATarget;
+                        }
                         if (playerEntity.distanceTo(mc.player) <= range.getValue()) {
                             //background
                             Color backgroundColor = new GSColor(new GSColor(background.getValue()), 100);

@@ -1,12 +1,8 @@
 package dev.yuruni.raycastclient.module.combat;
 
 import dev.yuruni.raycastclient.RaycastClient;
-import dev.yuruni.raycastclient.event.events.MouseEvent;
-import dev.yuruni.raycastclient.event.events.RenderEvent;
-import dev.yuruni.raycastclient.event.events.TickEvent;
-import dev.yuruni.raycastclient.event.listener.MouseListener;
-import dev.yuruni.raycastclient.event.listener.RenderListener;
-import dev.yuruni.raycastclient.event.listener.TickListener;
+import dev.yuruni.raycastclient.event.events.*;
+import dev.yuruni.raycastclient.event.listener.*;
 import dev.yuruni.raycastclient.module.Module;
 import dev.yuruni.raycastclient.setting.BooleanSetting;
 import dev.yuruni.raycastclient.setting.DoubleSetting;
@@ -28,7 +24,6 @@ import net.minecraft.item.AxeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.SwordItem;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
-import net.minecraft.util.BlockRotation;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
@@ -74,8 +69,13 @@ public class KillAura extends Module implements TickListener, RenderListener, Mo
         PACKET,
         NONE
     }
+    private enum ClientRotationType {
+        EDGETURN,
+        LOCKON,
+        LOCKONFREE
+    }
 
-    private static final DoubleSetting range = new DoubleSetting("Range", "range", "Range of attack", () -> true, 0, 15, 5);
+    private static final DoubleSetting range = new DoubleSetting("Range", "range", "Range of attack (Not in blocks for some reason)", () -> true, 0, 20, 5);
     private static final IntegerSetting fov = new IntegerSetting("FOV", "fov", "Degree of attack", () -> true, 30, 360, 360);
     private static final BooleanSetting attackPlayers = new BooleanSetting("Players", "players", "Attack Players", () -> true, true);
     private static final BooleanSetting attackHostiles = new BooleanSetting("Hostiles", "hostiles", "Attack Monsters", () -> true, true);
@@ -84,7 +84,8 @@ public class KillAura extends Module implements TickListener, RenderListener, Mo
     private static final EnumSetting<AttackPriority> priority = new EnumSetting<>("Priority", "priority", "Priority of attack", () -> true, AttackPriority.CLOSEST, AttackPriority.class);
     private static final BooleanSetting doCriticals = new BooleanSetting("Criticals", "criticals", "Do Criticals", () -> true, false);
     private static final EnumSetting<RotationType> rotationType = new EnumSetting<>("Rot", "rotationtype", "Type of rotation to do", () -> true, RotationType.CLIENT, RotationType.class);
-    private static final IntegerSetting rotationSpeed = new IntegerSetting("RotSpeed", "rotationspeed", "(rotations per second) Only applies to client rotation", () -> true, 10, 3600, 600);
+    private static final IntegerSetting rotationSpeed = new IntegerSetting("RotSpeed", "rotationspeed", "(operations per second * 2000) Only applies to client rotation", () -> true, 1, 20, 10);
+    private static final EnumSetting<ClientRotationType> cRotationType = new EnumSetting<>("CRot", "clientrotationtype", "Type of client rotation to do(If is selected)", () -> true, ClientRotationType.EDGETURN, ClientRotationType.class);
     private static final IntegerSetting speedRandomization = new IntegerSetting("SpdRnd", "attackspeedrandomizer", "(In ticks) Helps to bypass anticheats", () -> true, 0, 20, 0);
 
     private Entity target;
@@ -92,6 +93,7 @@ public class KillAura extends Module implements TickListener, RenderListener, Mo
     private int speedTickCap = 0;
     private float nextYaw;
     private float nextPitch;
+    private float realYaw;
 
     public KillAura() {
         super("Kill Aura", "killaura", "Attacks automatically", () -> true, true);
@@ -105,6 +107,7 @@ public class KillAura extends Module implements TickListener, RenderListener, Mo
         settings.add(doCriticals);
         settings.add(rotationType);
         settings.add(rotationSpeed);
+        settings.add(cRotationType);
         settings.add(speedRandomization);
     }
 
@@ -125,7 +128,6 @@ public class KillAura extends Module implements TickListener, RenderListener, Mo
     @Override
     public void OnUpdate(TickEvent event) { //TODO: Sync with target hud
         if (mc.player != null && mc.player.isAlive()) {
-            if (mc.player.getAttackCooldownProgress(0) != 1) return;
             if (speedRandomization.getValue() != 0) {
                 if (speedTickCap == 0) {
                     speedTickCap = new Random().nextInt(1, speedRandomization.getValue() + 1);
@@ -169,14 +171,28 @@ public class KillAura extends Module implements TickListener, RenderListener, Mo
             if (rotationType.getValue() == RotationType.PACKET) {
                 RaycastClient.INSTANCE.rotationFaker.faceVectorPacket(hitVec);
             } else if (rotationType.getValue() == RotationType.CLIENT) {
-                faceEntityClient(target);
+                if (cRotationType.getValue() == ClientRotationType.EDGETURN) {
+                    turnEntityClient(target);
+                }
+                if (cRotationType.getValue() == ClientRotationType.LOCKON) {
+                    faceEntityClient(target, false);
+                }
+                if (cRotationType.getValue() == ClientRotationType.LOCKONFREE) {
+                    /*
+                    RaycastClient.INSTANCE.rotationFaker.faceVectorPacket(hitVec);
+                    faceEntityClient(target); need to fix yaw
+                     */
+                }
             }
 
             //Client Rotation Check
-            if (rotationType.getValue() == RotationType.CLIENT) {
+            if (rotationType.getValue() == RotationType.CLIENT && cRotationType.getValue() == ClientRotationType.EDGETURN) {
                 if (!RotationUtil.isFacingBox(target.getBoundingBox(), range.getValue()))
                     return;
             }
+
+            //Cooldown check
+            if (mc.player.getAttackCooldownProgress(0) != 1) return;
 
             //Finally, swing the fucking hand
             if (mc.interactionManager == null) return; //HOLD!!! Prevent crashing on poor devices probably
@@ -211,7 +227,7 @@ public class KillAura extends Module implements TickListener, RenderListener, Mo
         return stream;
     }
 
-    private boolean faceEntityClient(Entity entity)
+    private void turnEntityClient(Entity entity)
     {
         // get needed rotation
         Box box = entity.getBoundingBox();
@@ -219,21 +235,39 @@ public class KillAura extends Module implements TickListener, RenderListener, Mo
 
         // turn towards center of boundingBox
         Rotation next = RotationUtil.slowlyTurnTowards(needed,
-                rotationSpeed.getValue() / 20F);
+                rotationSpeed.getValue() * 2000);
         nextYaw = next.yaw();
         nextPitch = next.pitch();
 
         // check if facing center
         if(RotationUtil.isAlreadyFacing(needed))
-            return true;
+            return;
 
         // if not facing center, check if facing anything in boundingBox
-        return RotationUtil.isFacingBox(box, range.getValue());
+        //RotationUtil.isFacingBox(box, range.getValue());
+    }
+
+    private void faceEntityClient(Entity entity, boolean avoidYaw) {
+        //Get rotation
+        Box box = entity.getBoundingBox();
+        Rotation targetRotation = RotationUtil.getNeededRotations(box.getCenter());
+
+        //Apply rotation straight to player
+        assert mc.player != null;
+        realYaw = realYaw != mc.player.getYaw() ? mc.player.getYaw() : realYaw;
+        mc.player.setHeadYaw(targetRotation.yaw());
+        if (!avoidYaw) {
+            mc.player.setYaw(targetRotation.yaw());
+        }
+        mc.player.setPitch(targetRotation.pitch());
+        mc.player.setBodyYaw(targetRotation.yaw());
     }
 
     @Override
     public void OnMouseUpdate(MouseEvent event) {
         if (target == null || mc.player == null) return;
+        if (rotationType.getValue() != RotationType.CLIENT) return;
+        if (cRotationType.getValue() != ClientRotationType.EDGETURN) return;
 
         int yawDiff = (int)(nextYaw - mc.player.getYaw());
         int pitchDiff = (int)(nextPitch - mc.player.getPitch());
