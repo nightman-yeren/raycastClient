@@ -4,6 +4,8 @@ import dev.yuruni.raycastclient.RaycastClient;
 import dev.yuruni.raycastclient.event.events.RenderEvent;
 import dev.yuruni.raycastclient.event.listener.RenderListener;
 import dev.yuruni.raycastclient.module.Module;
+import dev.yuruni.raycastclient.module.ModuleManager;
+import dev.yuruni.raycastclient.module.combat.KillAura;
 import dev.yuruni.raycastclient.setting.BooleanSetting;
 import dev.yuruni.raycastclient.util.color.Color;
 import net.minecraft.client.util.math.MatrixStack;
@@ -61,11 +63,13 @@ public class EntityESP extends Module implements RenderListener {
 
                 boundingBox = boundingBox.offset(velocityPartial);
 
-                if (entity instanceof AnimalEntity && renderAnimal.isOn()) {
+                KillAura killAuraModule = (KillAura) ModuleManager.getModule("killaura");
+
+                if (entity instanceof AnimalEntity && renderAnimal.isOn() && killAuraModule.getTarget() != entity) {
                     getRenderer().drawTransparent3DBox(matrixStack, boundingBox, new Color(0, 255, 0), 0.6f);
-                } else if (entity instanceof Monster && renderHostile.isOn()) {
+                } else if (entity instanceof Monster && renderHostile.isOn()  && killAuraModule.getTarget() != entity) {
                     getRenderer().drawTransparent3DBox(matrixStack, boundingBox, new Color(255, 0, 0), 0.6f);
-                } else if (!(entity instanceof AnimalEntity) && !(entity instanceof Monster) && renderOther.isOn()){
+                } else if (!(entity instanceof AnimalEntity) && !(entity instanceof Monster) && renderOther.isOn() && killAuraModule.getTarget() != entity){
                     getRenderer().drawTransparent3DBox(matrixStack, boundingBox, new Color(0, 0, 255), 0.6f);
                 }
             }

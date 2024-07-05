@@ -3,12 +3,12 @@ package dev.yuruni.raycastclient.module.render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.yuruni.raycastclient.RaycastClient;
 import dev.yuruni.raycastclient.event.events.WorldRenderEvent;
-import dev.yuruni.raycastclient.event.listener.RenderListener;
 import dev.yuruni.raycastclient.event.listener.WorldRenderListener;
 import dev.yuruni.raycastclient.module.Module;
 import dev.yuruni.raycastclient.setting.ColorSetting;
 import dev.yuruni.raycastclient.util.block.BlockUtil;
 import dev.yuruni.raycastclient.util.entity.EntityUtil;
+import dev.yuruni.raycastclient.util.math.RotationUtil;
 import dev.yuruni.raycastclient.util.render.AlternativeRenderUtil;
 import dev.yuruni.raycastclient.util.render.RenderUtil;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -23,10 +23,8 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext.FluidHandling;
-import net.minecraft.world.World;
 import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL11;
 
@@ -200,7 +198,7 @@ public class Trajectories extends Module implements WorldRenderListener {
             arrowMotion = arrowMotion.add(0, -gravity * 0.1, 0);
 
             Vec3d lastPos = path.size() > 1 ? path.get(path.size() - 2)
-                    : getEyesPos();
+                    : RotationUtil.getEyesPos();
 
             // check for block collision
             BlockHitResult bResult =
@@ -229,13 +227,6 @@ public class Trajectories extends Module implements WorldRenderListener {
         }
 
         return new Trajectory(path, type);
-    }
-
-    public static Vec3d getEyesPos()
-    {
-        ClientPlayerEntity player = mc.player;
-        float eyeHeight = player.getEyeHeight(player.getPose());
-        return player.getPos().add(0, eyeHeight, 0);
     }
 
     private Vec3d getHandOffset(Hand hand, double yaw)

@@ -19,6 +19,7 @@ public class ModuleManager {
         Category.HUD.modules.add(new SettingPrefixModule());
         Category.COMBAT.modules.add(new AntiInvis());
         Category.COMBAT.modules.add(new Criticals());
+        Category.COMBAT.modules.add(new KillAura());
         Category.COMBAT.modules.add(new Nametags());
         Category.COMBAT.modules.add(new NoOverlay());
         Category.MOVEMENT.modules.add(new Flight());

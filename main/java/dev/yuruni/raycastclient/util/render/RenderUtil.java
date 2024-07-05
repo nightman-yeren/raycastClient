@@ -746,7 +746,7 @@ public class RenderUtil {
         matrixStack.pop();
     }
      */
-    //TODO: make font manager and fix this shit
+    //TODO: make font manager and add this shit
 
     private void buildFilledArc(BufferBuilder bufferBuilder, Matrix4f matrix, float x, float y, float radius, float startAngle, float sweepAngle) {
         double roundedInterval = (sweepAngle / ROUND_QUALITY);

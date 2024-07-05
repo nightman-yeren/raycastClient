@@ -17,6 +17,7 @@
     "KeyboardMixin",
     "LightmapTextureManagerMixin",
     "MinecraftClientMixin",
+    "MouseMixin",
     "WorldRendererMixin"
   ],
   "injectors": {

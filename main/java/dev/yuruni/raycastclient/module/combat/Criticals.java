@@ -57,6 +57,7 @@ public class Criticals extends Module implements SendPacketListener {
                             player.jump();
                         } else {
                             ClientPlayNetworkHandler networkHandler = mc.getNetworkHandler();
+                            assert networkHandler != null;
                             networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() + 0.03125D, mc.player.getZ(), false));
                             networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY() + 0.0625D, mc.player.getZ(), false));
                             networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY(), mc.player.getZ(), false));

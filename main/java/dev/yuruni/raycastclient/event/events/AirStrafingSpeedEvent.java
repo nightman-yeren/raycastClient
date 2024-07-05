@@ -34,8 +34,9 @@ public class AirStrafingSpeedEvent extends AbstractEvent {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public <T extends AbstractListener> Class<T> GetListenerClassType() {
-        return null;
+    public Class<AirStrafingSpeedListener> GetListenerClassType() {
+        return AirStrafingSpeedListener.class;
     }
 }

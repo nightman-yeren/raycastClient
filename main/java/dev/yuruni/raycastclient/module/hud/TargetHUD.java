@@ -9,6 +9,7 @@ import dev.yuruni.raycastclient.RaycastClient;
 import dev.yuruni.raycastclient.event.events.RenderEvent;
 import dev.yuruni.raycastclient.event.listener.RenderListener;
 import dev.yuruni.raycastclient.module.Module;
+import dev.yuruni.raycastclient.setting.BooleanSetting;
 import dev.yuruni.raycastclient.setting.ColorSetting;
 import dev.yuruni.raycastclient.setting.IntegerSetting;
 import dev.yuruni.raycastclient.util.color.GSColor;
@@ -16,13 +17,11 @@ import net.minecraft.entity.Entity;;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Vec3d;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Map;
 import java.util.Objects;
 
 public class TargetHUD extends Module implements RenderListener {
@@ -31,7 +30,8 @@ public class TargetHUD extends Module implements RenderListener {
     private static final IntegerSetting range = new IntegerSetting("Range", "range", "Range of display", () -> true, 10, 260, 100);
     private static final ColorSetting background = new ColorSetting("Background", "background", "Background of box", () -> true, true, false, new Color(0, 0, 0, 255), false);
     private static final ColorSetting outline = new ColorSetting("Outline", "outline", "Outline of box", () -> true, true, false, new Color(0, 0, 0, 255), false);
-    private static PlayerEntity targetPlayer;
+    private static final BooleanSetting syncWithKillAura = new BooleanSetting("KA Sync", "killaurasync", "Sync with kill aura", () -> true, true);
+    private static PlayerEntity targetPlayer; //TODO: Sync with kill aura, make another entity variable in kill aura, range is unnecessary
 
     public TargetHUD() {
         super("Target HUD", "targethud", "Displays target info", () -> true, true);

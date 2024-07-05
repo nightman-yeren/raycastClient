@@ -2,9 +2,12 @@ package dev.yuruni.raycastclient;
 
 import dev.yuruni.raycastclient.config.ConfigManager;
 import dev.yuruni.raycastclient.event.EventManager;
+import dev.yuruni.raycastclient.event.listener.PostMotionListener;
+import dev.yuruni.raycastclient.event.listener.PreMotionListener;
 import dev.yuruni.raycastclient.gui.ClickGUI;
 import dev.yuruni.raycastclient.module.*;
 import dev.yuruni.raycastclient.module.hud.*;
+import dev.yuruni.raycastclient.util.entity.player.RotationFaker;
 import dev.yuruni.raycastclient.util.render.RenderUtil;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
@@ -34,6 +37,7 @@ public class RaycastClient implements ModInitializer {
 
     //Managers
     public EventManager eventManager;
+    public RotationFaker rotationFaker;
     //Utilities
     public static RenderUtil globalRenderer;
     //Global variables
@@ -45,7 +49,11 @@ public class RaycastClient implements ModInitializer {
         System.out.println("Modules Initialized");
         eventManager = new EventManager();
         globalRenderer = new RenderUtil();
-        System.out.println("Event Manager Assigned");
+
+        rotationFaker = new RotationFaker();
+        eventManager.AddListener(PreMotionListener.class, rotationFaker);
+        eventManager.AddListener(PostMotionListener.class, rotationFaker);
+        System.out.println("Managers Assigned");
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             if (!inited) {
                 for (int i = 32; i < keys.length; i++)
