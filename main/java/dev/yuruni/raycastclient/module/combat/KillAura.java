@@ -71,8 +71,7 @@ public class KillAura extends Module implements TickListener, RenderListener, Mo
     }
     private enum ClientRotationType {
         EDGETURN,
-        LOCKON,
-        LOCKONFREE
+        LOCKON
     }
 
     private static final DoubleSetting range = new DoubleSetting("Range", "range", "Range of attack (Not in blocks for some reason)", () -> true, 0, 20, 5);
@@ -93,7 +92,6 @@ public class KillAura extends Module implements TickListener, RenderListener, Mo
     private int speedTickCap = 0;
     private float nextYaw;
     private float nextPitch;
-    private float realYaw;
 
     public KillAura() {
         super("Kill Aura", "killaura", "Attacks automatically", () -> true, true);
@@ -167,21 +165,14 @@ public class KillAura extends Module implements TickListener, RenderListener, Mo
                 networkHandler.sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY(), mc.player.getZ(), false));
             }
             //Rotation
-            Vec3d hitVec = target.getBoundingBox().getCenter();
             if (rotationType.getValue() == RotationType.PACKET) {
-                RaycastClient.INSTANCE.rotationFaker.faceVectorPacket(hitVec);
+                faceEntity(target, true, true);
             } else if (rotationType.getValue() == RotationType.CLIENT) {
                 if (cRotationType.getValue() == ClientRotationType.EDGETURN) {
                     turnEntityClient(target);
                 }
                 if (cRotationType.getValue() == ClientRotationType.LOCKON) {
-                    faceEntityClient(target, false);
-                }
-                if (cRotationType.getValue() == ClientRotationType.LOCKONFREE) {
-                    /*
-                    RaycastClient.INSTANCE.rotationFaker.faceVectorPacket(hitVec);
-                    faceEntityClient(target); need to fix yaw
-                     */
+                    faceEntity(target, false, false);
                 }
             }
 
@@ -247,14 +238,22 @@ public class KillAura extends Module implements TickListener, RenderListener, Mo
         //RotationUtil.isFacingBox(box, range.getValue());
     }
 
-    private void faceEntityClient(Entity entity, boolean avoidYaw) {
+    private void faceEntity(Entity entity, boolean avoidYaw, boolean doRotationPacket) {
+        //Player check
+        if (mc.player == null) return;
+
         //Get rotation
         Box box = entity.getBoundingBox();
         Rotation targetRotation = RotationUtil.getNeededRotations(box.getCenter());
 
+        //Do packets
+        if (doRotationPacket) {
+            if (mc.getNetworkHandler() == null) return;
+            mc.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(targetRotation.yaw(), targetRotation.pitch(), mc.player.isOnGround()));
+        }
+
         //Apply rotation straight to player
         assert mc.player != null;
-        realYaw = realYaw != mc.player.getYaw() ? mc.player.getYaw() : realYaw;
         mc.player.setHeadYaw(targetRotation.yaw());
         if (!avoidYaw) {
             mc.player.setYaw(targetRotation.yaw());
