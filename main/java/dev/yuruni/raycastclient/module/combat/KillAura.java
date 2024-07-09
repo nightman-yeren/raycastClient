@@ -246,12 +246,6 @@ public class KillAura extends Module implements TickListener, RenderListener, Mo
         Box box = entity.getBoundingBox();
         Rotation targetRotation = RotationUtil.getNeededRotations(box.getCenter());
 
-        //Do packets
-        if (doRotationPacket) {
-            if (mc.getNetworkHandler() == null) return;
-            mc.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(targetRotation.yaw(), targetRotation.pitch(), mc.player.isOnGround()));
-        }
-
         //Apply rotation straight to player
         assert mc.player != null;
         mc.player.setHeadYaw(targetRotation.yaw());
@@ -260,6 +254,12 @@ public class KillAura extends Module implements TickListener, RenderListener, Mo
         }
         mc.player.setPitch(targetRotation.pitch());
         mc.player.setBodyYaw(targetRotation.yaw());
+
+        //Do packets
+        if (doRotationPacket) {
+            if (mc.getNetworkHandler() == null) return;
+            mc.getNetworkHandler().sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(targetRotation.yaw(), targetRotation.pitch(), mc.player.isOnGround()));
+        }
     }
 
     @Override
